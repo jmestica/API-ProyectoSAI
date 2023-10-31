@@ -6,7 +6,8 @@ const reactivosController = require('../controllers/reactivosController')
 
 router.get('/getQR/:id', reactivosController.getQR)
 router.get('/historial/:id', reactivosController.getHistorial)
-router.post('/movimiento/:id', reactivosController.agregarMovimiento)
+router.get('/ultimo-consumo/:id', reactivosController.getUltimoConsumo)
+router.post('/consumo/:id', reactivosController.agregarConsumo)
 router.get('/compra/:id', reactivosController.getDatosCompra)
 
 //Obtener el contador para realizar la codificación del reactivo

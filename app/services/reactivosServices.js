@@ -38,15 +38,17 @@ const getContador = async () => {
 }
 
 
-const agregarMovimiento = async (nuevoMovimiento) => {
+/* registrar consumo:
 
-    const values = [nuevoMovimiento.id_pieza, nuevoMovimiento.nombre_usuario, nuevoMovimiento.accion, nuevoMovimiento.fecha, nuevoMovimiento.hora, nuevoMovimiento.datos_adicionales]
+    cantidad_usada, registro_consumo, cantidad_actual, codigo, nombre_usuario,
+    */
 
-    const res = await db.query('INSERT INTO movimiento (id_pieza, nombre_usuario, accion, fecha, hora, datos_adicionales) VALUES ($1, $2, $3, $4, $5, $6)', values)
 
-    return res.rowCount
-
-}
+    const agregarConsumo = async (nuevoConsumo) => {
+        const values = [nuevoConsumo.cantidad_usada, nuevoConsumo.registro_consumo, nuevoConsumo.cantidad_actual, nuevoConsumo.codigo, nuevoConsumo.nombre_usuario];
+        const res = await db.query('INSERT INTO consumo (cantidad_usada, registro_consumo, cantidad_actual, codigo, nombre_usuario) VALUES ($1, $2, $3, $4, $5)', values);
+        return res.rowCount;
+    }
 
 
 const getHistorial = async (ID_Reactivo) => {
@@ -55,6 +57,15 @@ const getHistorial = async (ID_Reactivo) => {
 
     return rows
 
+}
+
+const getUltimoConsumo = async (ID_Reactivo) => {
+    const { rows } = await db.query(
+        'SELECT * FROM consumo WHERE codigo = $1 AND registro_consumo = (SELECT MAX(registro_consumo) FROM consumo WHERE codigo = $1) ORDER BY id_consumo DESC LIMIT 1',
+        [ID_Reactivo]
+    );
+
+    return rows.length > 0 ? rows[0] : null;
 }
 
 
@@ -87,9 +98,10 @@ module.exports = {
     getReactivo,
     crearReactivo,
     getContador,
-    agregarMovimiento,
+    agregarConsumo,
     getHistorial,
     getDatosCompra,
     getAllInfo,
-    getAll
+    getAll,
+    getUltimoConsumo
 }

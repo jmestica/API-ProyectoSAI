@@ -7,6 +7,8 @@ const login = async (req, res) => {
 
     const userData = await loginServices.obtenerUsuario(email)
 
+    console.log(userData);
+
     if (userData.hashedPassword) {
 
         const passwordMatch = await bcrypt.compare(password, userData.hashedPassword)
