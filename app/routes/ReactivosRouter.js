@@ -13,8 +13,11 @@ router.get('/compra/:id', reactivosController.getDatosCompra)
 //Obtener el contador para realizar la codificación del reactivo
 router.get('/contador', reactivosController.getContador)
 
-router.get('/info/:id', reactivosController.getAllInfo)       
-router.get('/getAll', reactivosController.getAll )
+router.get('/info/:id', reactivosController.getAllInfo)
+//Obtiene todos los reactivos sin filtros.    
+router.get('/getAll', reactivosController.getAll)
+//Obtiene los reactivos segun los filtros de búsqueda (consulta de stock)
+router.get('/getFiltrados', reactivosController.getFiltrados )
 router.get('/:id', reactivosController.getReactivo)
 
 //Alta de reactivos: Crear un nuevo reactivo en la base de datos
