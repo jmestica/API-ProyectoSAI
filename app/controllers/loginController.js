@@ -7,9 +7,7 @@ const login = async (req, res) => {
 
     const userData = await loginServices.obtenerUsuario(email)
 
-    console.log(userData);
-
-    if (userData.hashedPassword) {
+    if (userData && userData.hashedPassword) {
 
         const passwordMatch = await bcrypt.compare(password, userData.hashedPassword)
 
@@ -19,13 +17,13 @@ const login = async (req, res) => {
 
         } else {
 
-            res.send({loginStatus: false, message: 'Contraseña incorrecta'})
+            res.send({loginStatus: false, message: 'Usuario o contraseña incorrecta'})
 
         }
 
     } else {
 
-        res.send({loginStatus: false, message: 'Usuario no encontrado'})
+        res.send({loginStatus: false, message: 'Usuario o contraseña incorrecta'})
 
     }
 
