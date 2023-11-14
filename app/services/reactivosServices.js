@@ -182,6 +182,35 @@ const getFiltrados = async (labFilter, tipoFilter, stockFilter) => {
 }
 
 
+const editarReactivo = async (ID_Reactivo, updates) => {
+
+    const values = [
+        updates.observaciones,
+        updates.cantidad,
+        updates.fecha_vto,
+        updates.nro_lote,
+        updates.nro_expediente,
+        updates.conservacion,
+        updates.marca,
+        ID_Reactivo
+    ];
+
+    
+    try {
+        const response = await db.query(
+            'UPDATE reactivo SET observaciones = $1, cantidad = $2, fecha_vto = $3, nro_lote = $4, nro_expediente = $5, conservacion = $6, marca = $7 WHERE codigo = $8',
+            values
+        );
+
+        return response.rowCount === 1; 
+    } catch (error) {
+        console.error('Error al actualizar el reactivo:', error);
+        return false;
+    }
+  
+
+}
+
 module.exports = {
     getReactivo,
     crearReactivo,
@@ -192,5 +221,6 @@ module.exports = {
     getAllInfo,
     getAll,
     getUltimoConsumo,
-    getFiltrados
+    getFiltrados,
+    editarReactivo
 }
