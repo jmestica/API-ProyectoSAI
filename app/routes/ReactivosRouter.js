@@ -18,6 +18,7 @@ router.get('/getAll', reactivosController.getAll)
 //Obtiene los reactivos segun los filtros de búsqueda (consulta de stock)
 router.get('/getFiltrados', reactivosController.getFiltrados )
 router.get('/:id', reactivosController.getReactivo)
+router.patch('/:id', reactivosController.updateReactivo)
 
 //Alta de reactivos: Crear un nuevo reactivo en la base de datos
 router.post('/', reactivosController.crearReactivo)

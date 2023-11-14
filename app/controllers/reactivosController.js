@@ -135,6 +135,19 @@ const getFiltrados = async(req, res) => {
 }
 
 
+const updateReactivo = async (req, res) => {
+
+    const ID_Reactivo = req.params.id;
+    const updates = req.body;
+
+    const resp = await reactivosServices.editarReactivo(ID_Reactivo, updates)
+
+    res.send(resp)
+    
+
+}
+
+
 module.exports = {
     getReactivo,
     getQR,
@@ -145,5 +158,6 @@ module.exports = {
     getAllInfo,
     getAll,
     getUltimoConsumo,
-    getFiltrados
+    getFiltrados,
+    updateReactivo
 } 
