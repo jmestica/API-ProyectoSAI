@@ -83,20 +83,6 @@ const agregarConsumo = async (req, res) => {
 }
 
 
-const getDatosCompra = async (req, res) => {
-
-    const ID_Pieza = req.params.id
-
-    const response = await reactivosServices.getDatosCompra(ID_Pieza)
-
-    response.map((item) => {
-        item.fecha = item.fecha.toLocaleDateString()
-    })
-
-    res.send(response)
-}
-
-
 const getAllInfo = async (req, res) => {
 
     const ID_Pieza = req.params.id

@@ -4,11 +4,7 @@ const getReactivo = async (id) => {
 
     const { rows } = await db.query(`
   SELECT
-    nombre_reactivo,
-    cantidad,
-    marca,
-    fecha_ingreso,
-    fecha_vto
+    *
   FROM reactivo
   WHERE codigo = $1
 `, [id]);
