@@ -142,7 +142,6 @@ module.exports = {
     getContador,
     getHistorial,
     agregarConsumo,
-    getDatosCompra,
     getAllInfo,
     getAll,
     getUltimoConsumo,
