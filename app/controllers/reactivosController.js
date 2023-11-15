@@ -74,9 +74,9 @@ const getUltimoConsumo = async (req, res) => {
 //Este endpoint es para crear un nuevo movimiento en la pieza
 const agregarConsumo = async (req, res) => {
 
-    const nuevoMovimiento = req.body
+    const nuevoConsumo = req.body
 
-    const response = await reactivosServices.agregarConsumo(nuevoMovimiento)
+    const response = await reactivosServices.agregarConsumo(nuevoConsumo)
 
     response === 1 ? res.send({ success: true }) : res.send({ success: false })
 
