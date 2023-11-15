@@ -65,14 +65,6 @@ const getUltimoConsumo = async (ID_Reactivo) => {
 }
 
 
-const getDatosCompra = async (ID_Pieza) => {
-
-    const { rows } = await db.query('SELECT * FROM es_comprada WHERE id_pieza = $1', [ID_Pieza])
-
-    return rows
-
-}
-
 const getAllInfo = async (ID_Pieza) => {
 
     const { rows } = await db.query('SELECT movimiento.*, pieza.*, es_comprada.* FROM movimiento  INNER JOIN pieza ON movimiento.id_pieza = pieza.id_pieza  INNER JOIN es_comprada ON pieza.id_pieza = es_comprada.id_pieza WHERE movimiento.id_pieza = $1', [ID_Pieza])
@@ -90,10 +82,6 @@ const getAll = async () => {
 }
 
 const getFiltrados = async (labFilter, tipoFilter, stockFilter) => {
-
-    console.log(labFilter, "labfilter")
-    console.log(tipoFilter, "tipofilter")
-    console.log(stockFilter, "stockFilkter");
 
     try {
         let sql = 'SELECT * FROM reactivo WHERE ';
@@ -217,7 +205,6 @@ module.exports = {
     getContador,
     agregarConsumo,
     getHistorial,
-    getDatosCompra,
     getAllInfo,
     getAll,
     getUltimoConsumo,
