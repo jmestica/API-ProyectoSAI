@@ -22,9 +22,8 @@ const getQR = (req, res) => {
     const codigo_reactivo = req.params.id
     
     const IP = process.env.IP
-    const FRONT_PORT = process.env.FRONT_PORT
 
-    const url = `http://${IP}:${FRONT_PORT}/tracker/gestionar-reactivo/${codigo_reactivo}`
+    const url = `http://${IP}/tracker/gestionar-reactivo/${codigo_reactivo}`
 
     qrcode.toDataURL(url, (err, src) => {
         if (err) res.send("No se pudo crear el QR de la pieza");
