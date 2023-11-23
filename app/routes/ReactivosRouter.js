@@ -22,6 +22,8 @@ router.patch('/:id', reactivosController.updateReactivo)
 
 //Alta de reactivos: Crear un nuevo reactivo en la base de datos
 router.post('/', reactivosController.crearReactivo)
+// Marca como finalizado un reactivo
+router.put('/finished/:id', reactivosController.finishedReactivo)
 
 
 
