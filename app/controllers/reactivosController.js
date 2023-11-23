@@ -36,7 +36,7 @@ const crearReactivo = async (req, res) => {
     const nuevoReactivo = req.body
 
     const response = await reactivosServices.crearReactivo(nuevoReactivo)
-  
+
     res.send(response)
 }
 
@@ -45,7 +45,7 @@ const getContador = async (req, res) => {
 
     const numero_contador = await reactivosServices.getContador()
 
-    res.send({numero_contador: numero_contador})
+    res.send({ numero_contador: numero_contador })
 
 }
 
@@ -64,7 +64,7 @@ const getUltimoConsumo = async (req, res) => {
     const response = await reactivosServices.getUltimoConsumo(ID_Reactivo);
 
     res.send(response);
-    
+
 }
 
 
@@ -122,13 +122,13 @@ const getAll = async (req, res) => {
 
 }
 
-const getFiltrados = async(req, res) => {
+const getFiltrados = async (req, res) => {
 
     const { labFilter, tipoFilter, stockFilter } = req.query;
-    
+
     try {
         const response = await reactivosServices.getFiltrados(labFilter, tipoFilter, stockFilter)
-        
+
         if (response == null) {
             res.send({
                 msg: "No se encontraron reactivos que cumplan con los filtros seleccionados",
@@ -138,13 +138,31 @@ const getFiltrados = async(req, res) => {
         } else {
             res.send(response)
         }
-        
+
     } catch (error) {
         console.error(error)
         res.send(error)
     }
 }
 
+
+const finishedReactivo = async (req, res) => {
+
+    console.log("pegandooooo");
+    const ID_Reactivo = req.params.id;
+    const fechaFinalizacion = new Date().toLocaleDateString();
+
+    try {
+        const response = await reactivosServices.finishedReactivo(ID_Reactivo, fechaFinalizacion);
+        response === 1 
+        ? res.send({msg: "Fecha de finalización insertada correctamente.", status: 200}) 
+        : res.send({msg: "No se pudo insertar la fecha de finalización del reactivo.", status: 400});
+
+    } catch (error) {
+        console.error(error)
+        res.send(error)
+    }
+}
 
 module.exports = {
     getReactivo,
@@ -157,5 +175,6 @@ module.exports = {
     getAllInfo,
     getAll,
     getUltimoConsumo,
-    getFiltrados
+    getFiltrados,
+    finishedReactivo
 } 
