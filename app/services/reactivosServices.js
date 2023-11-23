@@ -85,35 +85,36 @@ const getAll = async () => {
 const getFiltrados = async (labFilter, tipoFilter, stockFilter) => {
 
     try {
-        let sql = 'SELECT * FROM reactivo WHERE ';
+        let sql;
 
         if (labFilter) {
             const labInitial = labFilter.charAt(0).toUpperCase(); // Obtén la primera letra del nombre del laboratorio en mayúscula
-            sql += `codigo LIKE $1`;
-            values = [`${labInitial}%`]; // Inicializa el arreglo de valores con la letra del laboratorio
+            sql = 'SELECT * FROM consumo INNER JOIN reactivo ON consumo.codigo = reactivo.codigo WHERE reactivo.codigo LIKE $1';
+
+            const values = [`${labInitial}%`]; // Inicializa el arreglo de valores con la letra del laboratorio
 
             if (stockFilter === 'En Stock') {
-                sql += ' AND cantidad > 0';
+                sql += ' AND reactivo.cantidad_actual > 0';
             } else if (stockFilter === 'Sin Stock') {
-                sql += ' AND (fecha_finalizacion IS NOT NULL)'; // Agrega la condición para cantidad igual o menor a 0 o nula
+                sql += ' AND (reactivo.fecha_finalizacion IS NOT NULL)'; // Agrega la condición para cantidad igual o menor a 0 o nula
             } else if (stockFilter === 'Descartado') {
-                sql += ' AND fecha_descarte IS NOT NULL';
+                sql += ' AND reactivo.fecha_descarte IS NOT NULL';
             } else if (stockFilter === 'Vencido') {
-                sql += ' AND fecha_vto < CURRENT_DATE';
+                sql += ' AND reactivo.fecha_vto < CURRENT_DATE';
             }
 
             if (tipoFilter) {
-                sql += ' AND nombre_reactivo = $2';
+                sql += ' AND reactivo.nombre_reactivo = $2';
                 values.push(tipoFilter);
             }
+
+            // Realiza la consulta a la base de datos con los filtros aplicados
+            const { rows } = await db.query(sql, values);
+
+            return rows.length > 0 ? rows : null;
         } else {
             return null; // Devuelve null si no se especifica el laboratorio
         }
-
-        // Realiza la consulta a la base de datos con los filtros aplicados
-        const { rows } = await db.query(sql, values);
-
-        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.error("Error al obtener los reactivos filtrados", error);
     }
