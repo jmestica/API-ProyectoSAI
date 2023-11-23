@@ -13,15 +13,17 @@ const getReactivo = async (req, res) => {
 }
 
 
-// Este endpoint, es para obtener el QR de una pieza, puede ser utilizado
-// cuando recién es creada la pieza, o bien cuando se quiere obtener nuevamente
-// el QR de la pieza, por pérdidas o daños.
+/* Este endpoint, es para obtener el QR de una pieza, puede ser utilizado
+ cuando recién es creada la pieza, o bien cuando se quiere obtener nuevamente
+ el QR de la pieza, por pérdidas o daños */
 
 const getQR = (req, res) => {
 
-    const ID_Pieza = req.params.id;
+    const codigo_reactivo = req.params.id
+    
+    const IP = process.env.IP
 
-    const url = `http://192.168.0.130:5173/tracker/gestionarpieza/${ID_Pieza}`
+    const url = `http://${IP}/tracker/gestionar-reactivo/${codigo_reactivo}`
 
     qrcode.toDataURL(url, (err, src) => {
         if (err) res.send("No se pudo crear el QR de la pieza");
@@ -36,8 +38,8 @@ const crearReactivo = async (req, res) => {
     const nuevoReactivo = req.body
 
     const response = await reactivosServices.crearReactivo(nuevoReactivo)
-
-    res.send(response)
+  
+    response ? res.sendStatus(200) : res.sendStatus(400) 
 }
 
 //Endpoint para obtener el ID de la ultima inserción en la base de datos para codificar nuevos reactivos
@@ -71,26 +73,12 @@ const getUltimoConsumo = async (req, res) => {
 //Este endpoint es para crear un nuevo movimiento en la pieza
 const agregarConsumo = async (req, res) => {
 
-    const nuevoMovimiento = req.body
+    const nuevoConsumo = req.body
 
-    const response = await reactivosServices.agregarConsumo(nuevoMovimiento)
+    const response = await reactivosServices.agregarConsumo(nuevoConsumo)
 
     response === 1 ? res.send({ success: true }) : res.send({ success: false })
 
-}
-
-
-const getDatosCompra = async (req, res) => {
-
-    const ID_Pieza = req.params.id
-
-    const response = await reactivosServices.getDatosCompra(ID_Pieza)
-
-    response.map((item) => {
-        item.fecha = item.fecha.toLocaleDateString()
-    })
-
-    res.send(response)
 }
 
 
@@ -164,6 +152,18 @@ const finishedReactivo = async (req, res) => {
     }
 }
 
+
+const updateReactivo = async (req, res) => {
+
+    const ID_Reactivo = req.params.id;
+    const updates = req.body;
+
+    const resp = await reactivosServices.editarReactivo(ID_Reactivo, updates)
+
+    res.send(resp)
+    
+}
+
 module.exports = {
     getReactivo,
     getQR,
@@ -171,10 +171,10 @@ module.exports = {
     getContador,
     getHistorial,
     agregarConsumo,
-    getDatosCompra,
     getAllInfo,
     getAll,
     getUltimoConsumo,
     getFiltrados,
-    finishedReactivo
+    finishedReactivo,
+    updateReactivo
 } 

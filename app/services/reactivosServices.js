@@ -4,11 +4,7 @@ const getReactivo = async (id) => {
 
     const { rows } = await db.query(`
   SELECT
-    nombre_reactivo,
-    cantidad,
-    marca,
-    fecha_ingreso,
-    fecha_vto
+    *
   FROM reactivo
   WHERE codigo = $1
 `, [id]);
@@ -17,16 +13,13 @@ const getReactivo = async (id) => {
 }
 
 
-const crearReactivo = async (nuevaPieza) => {
+const crearReactivo = async (nuevoReactivo) => {
 
-    const values = [nuevaPieza.ID_Pieza, nuevaPieza.nombre, nuevaPieza.descripcion, nuevaPieza.cantidad, nuevaPieza.unidad]
+    const values = [nuevoReactivo.codigo, nuevoReactivo.observaciones, nuevoReactivo.nombre_reactivo, nuevoReactivo.cantidad, nuevoReactivo.fecha_vto, nuevoReactivo.nro_lote, nuevoReactivo.fecha_ingreso, nuevoReactivo.nro_expediente, nuevoReactivo.conservacion, nuevoReactivo.fecha_finalizacion, nuevoReactivo.marca, nuevoReactivo.fecha_descarte, nuevoReactivo.contador]
 
-    const { rows } = await db.query('INSERT INTO pieza VALUES ($1, $2, $3, $4, $5)', values)
+    const response = await db.query('INSERT INTO reactivo VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', values)
 
-    const es_comprada_values = [nuevaPieza.ID_Pieza, nuevaPieza.es_comprada.nombre_vendedor, nuevaPieza.es_comprada.fecha, nuevaPieza.es_comprada.monto_compra]
-    const { es_comprada } = await db.query('INSERT INTO es_comprada VALUES ($1, $2, $3, $4)', es_comprada_values)
-
-    return true
+    return response.rowCount === 1? true: false
 
 }
 
@@ -71,14 +64,6 @@ const getUltimoConsumo = async (ID_Reactivo) => {
     return rows.length > 0 ? rows[0] : null;
 }
 
-
-const getDatosCompra = async (ID_Pieza) => {
-
-    const { rows } = await db.query('SELECT * FROM es_comprada WHERE id_pieza = $1', [ID_Pieza])
-
-    return rows
-
-}
 
 const getAllInfo = async (ID_Pieza) => {
 
@@ -152,16 +137,45 @@ const finishedReactivo = async (ID_Reactivo, fechaFinalizacion) => {
 };
 
 
+const editarReactivo = async (ID_Reactivo, updates) => {
+
+    const values = [
+        updates.observaciones,
+        updates.cantidad,
+        updates.fecha_vto,
+        updates.nro_lote,
+        updates.nro_expediente,
+        updates.conservacion,
+        updates.marca,
+        ID_Reactivo
+    ];
+
+    
+    try {
+        const response = await db.query(
+            'UPDATE reactivo SET observaciones = $1, cantidad = $2, fecha_vto = $3, nro_lote = $4, nro_expediente = $5, conservacion = $6, marca = $7 WHERE codigo = $8',
+            values
+        );
+
+        return response.rowCount === 1; 
+    } catch (error) {
+        console.error('Error al actualizar el reactivo:', error);
+        return false;
+    }
+  
+
+}
+
 module.exports = {
     getReactivo,
     crearReactivo,
     getContador,
     agregarConsumo,
     getHistorial,
-    getDatosCompra,
     getAllInfo,
     getAll,
     getUltimoConsumo,
     getFiltrados,
-    finishedReactivo
+    finishedReactivo,
+    editarReactivo
 }
