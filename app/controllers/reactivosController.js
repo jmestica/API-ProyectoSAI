@@ -111,27 +111,26 @@ const getAll = async (req, res) => {
 }
 
 const getFiltrados = async (req, res) => {
-
     const { labFilter, tipoFilter, stockFilter } = req.query;
 
     try {
-        const response = await reactivosServices.getFiltrados(labFilter, tipoFilter, stockFilter)
+        // Modifica la consulta SQL para realizar el INNER JOIN
+        const response = await reactivosServices.getFiltrados(labFilter, tipoFilter, stockFilter);
 
         if (response == null) {
             res.send({
                 msg: "No se encontraron reactivos que cumplan con los filtros seleccionados",
                 data: null,
                 status: 400
-            })
+            });
         } else {
-            res.send(response)
+            res.send(response);
         }
-
     } catch (error) {
-        console.error(error)
-        res.send(error)
+        console.error(error);
+        res.send(error);
     }
-}
+};
 
 
 const finishedReactivo = async (req, res) => {

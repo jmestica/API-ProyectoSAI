@@ -85,38 +85,40 @@ const getAll = async () => {
 const getFiltrados = async (labFilter, tipoFilter, stockFilter) => {
 
     try {
-        let sql = 'SELECT * FROM reactivo WHERE ';
-
+        let sql = 'SELECT reactivo.*, consumo.cantidad_usada, consumo.registro_consumo, consumo.cantidad_actual FROM reactivo';
+        sql += ' INNER JOIN consumo ON reactivo.codigo = consumo.codigo';
+        sql += ' WHERE ';
+    
         if (labFilter) {
-            const labInitial = labFilter.charAt(0).toUpperCase(); // Obtén la primera letra del nombre del laboratorio en mayúscula
-            sql += `codigo LIKE $1`;
-            values = [`${labInitial}%`]; // Inicializa el arreglo de valores con la letra del laboratorio
-
+            const labInitial = labFilter.charAt(0).toUpperCase();
+            sql += 'reactivo.codigo LIKE $1';
+            values = [`${labInitial}%`];
+    
             if (stockFilter === 'En Stock') {
-                sql += ' AND cantidad > 0';
+                sql += ' AND consumo.cantidad_actual > 0';  // Modificamos aquí para usar la cantidad de la tabla consumo
             } else if (stockFilter === 'Sin Stock') {
-                sql += ' AND (fecha_finalizacion IS NOT NULL)'; // Agrega la condición para cantidad igual o menor a 0 o nula
+                sql += ' AND (consumo.cantidad_actual = 0 AND reactivo.fecha_finalizacion IS NOT NULL)';
             } else if (stockFilter === 'Descartado') {
-                sql += ' AND fecha_descarte IS NOT NULL';
+                sql += ' AND reactivo.fecha_descarte IS NOT NULL';
             } else if (stockFilter === 'Vencido') {
-                sql += ' AND fecha_vto < CURRENT_DATE';
+                sql += ' AND reactivo.fecha_vto < CURRENT_DATE';
             }
-
+    
             if (tipoFilter) {
-                sql += ' AND nombre_reactivo = $2';
+                sql += ' AND reactivo.nombre_reactivo = $2';
                 values.push(tipoFilter);
             }
         } else {
-            return null; // Devuelve null si no se especifica el laboratorio
+            return null;
         }
-
-        // Realiza la consulta a la base de datos con los filtros aplicados
+    
         const { rows } = await db.query(sql, values);
-
+    
         return rows.length > 0 ? rows : null;
     } catch (error) {
         console.error("Error al obtener los reactivos filtrados", error);
     }
+    
 }
 
 const finishedReactivo = async (ID_Reactivo, fechaFinalizacion) => {
