@@ -135,7 +135,6 @@ const getFiltrados = async (req, res) => {
 
 const finishedReactivo = async (req, res) => {
 
-    console.log("pegandooooo");
     const ID_Reactivo = req.params.id;
     const fechaFinalizacion = new Date().toLocaleDateString();
 
